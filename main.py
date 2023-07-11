@@ -19,7 +19,7 @@ total_lines = open(log_file_path).read().count("\n")
 reg_patterns = {
     "falcon": r"FALCON",
     "publish": r"\|AT\+QMTPUBEX=(\d+),(\d+),(\d+),\d+,\"(?P<topic>[^\"]+)\"", # \|AT\+QMTPUBEX=(\d+),(\d+),(\d+),\d+,\"(.+\)"
-    "response": r"\+QMTPUBEX: \d+,(\d+),(?P<result>\d)" #\+QMTPUBEX: \d+,(\d+),(\d+)
+    "response": r"\+QMTPUBEX:\s((?:\d+,)+)(?P<result>\d)" #\+QMTPUBEX: \d+,(\d+),(\d+)
 }
 patterns = {k:{"pattern":re.compile(p), "count" : 0} for k,p in reg_patterns.items()}
 
