@@ -5,9 +5,9 @@ from tqdm import tqdm
 from prettytable import PrettyTable
 
 
-log_file_path = "logs/RM_05_07_master.log"
+# log_file_path = "logs/RM_05_07_master.log"
 # log_file_path = "logs/OVERNIGHT_MASTER_5JUL7.40"
-# log_file_path = "logs/log2.txt"
+log_file_path = "logs/log2.txt"
 
 if len(sys.argv) > 1:
     log_file_path = sys.argv[1]
@@ -18,18 +18,20 @@ total_lines = open(log_file_path).read().count("\n")
 
 reg_patterns = {
     "falcon": r"FALCON",
+    "watchdog": r"WATCHDOG",
     "publish": r"\|AT\+QMTPUBEX=(\d+),(\d+),(\d+),\d+,\"(?P<topic>[^\"]+)\"", # \|AT\+QMTPUBEX=(\d+),(\d+),(\d+),\d+,\"(.+\)"
     "response": r"\+QMTPUBEX:\s((?:\d+,)+)(?P<result>\d)" #\+QMTPUBEX: \d+,(\d+),(\d+)
 }
 patterns = {k:{"pattern":re.compile(p), "count" : 0} for k,p in reg_patterns.items()}
 
 success_counts = 0
+failure_count = 0
 topic_counts = {}
 
 start_time = None
 end_time = None
 
-updlogs = open("logs/analysedlogs.txt", "w")
+updlogs = open("analysedlogs/analysedlogs.txt", "w")
 
 with open(log_file_path, 'r') as logs_file:
     for line_no, line in enumerate(tqdm(logs_file, total=total_lines), start=1):
@@ -48,6 +50,8 @@ with open(log_file_path, 'r') as logs_file:
                     result = int(match.groupdict()["result"])
                     if result == 0:
                         success_counts += 1
+                    else:
+                        failure_count += 1
                 break
         if not start_time:
             start_time = line[1:20]
@@ -70,6 +74,7 @@ tbl.add_rows(
     [
         ["Duration", dur],
         ["FALCON", patterns["falcon"]["count"]],
+        ["WATCHDOG", patterns["watchdog"]["count"]],
         ["AT+QMTPUBEX", patterns["publish"]["count"]],
     ]
 )
@@ -78,7 +83,8 @@ for k,v in topic_counts.items():
 tbl.add_rows(
     [
         ["+QMTPUBEX", patterns["response"]["count"]],
-        ["Publish Success", success_counts]
+        ["Publish Success", success_counts],
+        ["Publish Failure", failure_count]
     ]
 )
 print(tbl)
