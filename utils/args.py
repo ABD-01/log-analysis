@@ -1,10 +1,46 @@
 import argparse
+from tabulate import tabulate
 
 def Parser():
-    parser = argparse.ArgumentParser(description="Log Analysis")
-    parser.add_argument("-l", "--log_file", type=str, help="Path to log file", default="logs/log2.txt")
-    parser.add_argument("-o", "--out_file", type=str, help="Path to output log file", default="analysedlogs/outlog.txt")
-    parser.add_argument("-k", "--key_words", nargs='*', default=["FALCON", "WATCHDOG"])
-    parser.add_argument("-t", "--topics", nargs='*', default=[])
+    parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser.add_argument("-l", "--log_file", type=str, help="Path to log file", default="logs/log2.txt")
+    parent_parser.add_argument("-o", "--out_file", type=str, help="Path to output log file", default="analysedlogs/outlog.txt")
+    parent_parser.add_argument("-k", "--key_words", nargs='*', default=[])
+    parent_parser.add_argument("-t", "--topics", nargs='*', default=[])
+    parent_parser.add_argument("-r", "--regex", nargs=argparse.REMAINDER, help="Raw string command or regex expression")
+    parent_parser.add_argument("-c", "--ignore-case", action="store_true", help="Ignore Match Case")
+    parent_parser.add_argument("-dp", '--disable-progresslive', action='store_true', help='Disable tqdm progress bar')
+
+    # main parser
+    parser = argparse.ArgumentParser(description="Log Analysis", parents=[parent_parser])
+    parser.add_argument("--all", action="store_true", help="Show all available analysis")
+    subparsers = parser.add_subparsers(dest="module", help="Choose the related module for log analysis", title="Module")
+
+    network_parser = subparsers.add_parser("network", parents=[parent_parser], description="Network related log analysis")
+    network_parser.add_argument("--tcp", action="store_true", help="TCP related log analysis")
+    network_parser.add_argument("--mqtt", action="store_true", help="MQTT related log analysis")
+
+    sleep_parser = subparsers.add_parser("sleep", parents=[parent_parser], description="Sleep related log analysis")
+    sleep_parser.add_argument("--wake", action="store_true", help="Get wake up related log analysis")
+    sleep_parser.add_argument("--sleep-cycle", action="store_true", help="Get sleep cycle related log analysis")
 
     return parser
+
+if __name__ == "__main__":
+    parser = Parser()
+    args = parser.parse_args()
+
+    # Create a table to display the parsed arguments
+    table = []
+
+    # Add the operation to the table
+    if hasattr(args, "module"):
+        table.append(["module", args.module])
+
+    # Iterate over the parsed arguments and add them to the table
+    for arg in vars(args):
+        value = getattr(args, arg)
+        arg_type = type(value).__name__
+        table.append([arg, value, arg_type])
+
+    print(tabulate(table, headers=["Argument", "Value", "Type"], tablefmt="fancy_grid"))
