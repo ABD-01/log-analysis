@@ -1,11 +1,12 @@
 import argparse
+import warnings
 from tabulate import tabulate
 
 def Parser():
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument("-l", "--log_file", type=str, help="Path to log file", default="logs/log2.txt")
-    parent_parser.add_argument("-o", "--out_file", type=str, help="Path to output log file", default="analysedlogs/outlog.txt")
-    parent_parser.add_argument("-k", "--key_words", nargs='*', default=[])
+    parent_parser.add_argument("-l", "--log-file", type=str, help="Path to log file", required=True)
+    parent_parser.add_argument("-o", "--out-file", type=str, help="Path to output log file")
+    parent_parser.add_argument("-k", "--keywords", nargs='*', default=[])
     parent_parser.add_argument("-t", "--topics", nargs='*', default=[])
     parent_parser.add_argument("-r", "--regex", nargs=argparse.REMAINDER, help="Raw string command or regex expression")
     parent_parser.add_argument("-c", "--ignore-case", action="store_true", help="Ignore Match Case")
@@ -29,6 +30,10 @@ def Parser():
 if __name__ == "__main__":
     parser = Parser()
     args = parser.parse_args()
+
+    if args.regex:
+        warning_msg = "Warning: --regex argument is not implemented yet. It will be added in a future update."
+        warnings.warn(warning_msg, category=FutureWarning)
 
     # Create a table to display the parsed arguments
     table = []

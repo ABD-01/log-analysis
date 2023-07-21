@@ -1,11 +1,9 @@
 from datetime import datetime
 from os import mkdir
 import os.path as osp
-import re
-from prettytable import PrettyTable
 from tabulate import tabulate
 
-from . import BasicLog
+from .logabc import BasicLog
 
 class LogAnalyzer:
     def __init__(self, args):
@@ -24,7 +22,7 @@ class LogAnalyzer:
         else:
             if not osp.exists("analysedlogs"):
                 mkdir("analysedlogs")
-            self.out_log_file_path = "analysedlogs/" + "out_" + str(osp.path.basename(args.log_file))
+            self.out_log_file_path = "analysedlogs/" + "out_" + str(osp.basename(args.log_file))
         self.out_log_file = open(self.out_log_file_path, "w")
 
     def add_log_type(self, logtype:BasicLog):
