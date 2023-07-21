@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=46.4.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry]
+name = "logpy"
+version = "1.0.1"
+authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
+description = "Your Log Analysis Tool"
+readme = "README.md"
+keywords = ["log", "analysis","python"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+tabulate = "^0.8"
+easydict = "^1.9"
+argparse = "^1.1"
+tqdm = "^4.62"
+
+[tool.poetry.scripts]
+logpy = "logpy.main:main"
