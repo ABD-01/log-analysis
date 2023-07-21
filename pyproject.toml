@@ -7,6 +7,7 @@ name = "logpy"
 version = "1.2.1"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
 description = "Your Log Analysis Tool"
+license = "GNU General Public License v2.0"
 readme = "README.md"
 keywords = ["log", "analysis","python"]
 
