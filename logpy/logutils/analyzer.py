@@ -23,7 +23,7 @@ class LogAnalyzer:
             if not osp.exists("analysedlogs"):
                 mkdir("analysedlogs")
             self.out_log_file_path = "analysedlogs/" + "out_" + str(osp.basename(args.log_file))
-        self.out_log_file = open(self.out_log_file_path, "w")
+        self.out_log_file = open(self.out_log_file_path, "w", encoding='utf-8')
 
     def add_log_type(self, logtype:BasicLog):
             self.logslist.append(logtype)
@@ -69,16 +69,16 @@ class LogAnalyzer:
             return f"{int(hours)} hrs, {int(minutes)} mins"
         return None
 
-    def print_summary(self):
+    def print_summary(self, show_empty=False):
         print(f"Log File: {self.log_file_path}")
         print(f"Logs from {self.start_time} to {self.end_time}")
         tbl = [["Name", "Value", "Count"]]
         tbl.append(["Duration of Log File", "", self.calculate_duration()])
         for l in self.logslist:
-            l.print_summary(table=tbl)
+            l.print_summary(tbl, show_empty)
 
         self.output = str(tabulate(tbl, headers="firstrow", tablefmt='fancy_grid', ))
-        # self.out_log_file.write("\nSummary:")
-        # self.out_log_file.write(self.output)
+        self.out_log_file.write(f'\n\n{"="*100}\nSummary:\n')
+        self.out_log_file.write(self.output)
         self.out_log_file.close()
         print(self.output)

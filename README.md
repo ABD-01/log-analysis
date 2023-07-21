@@ -1,6 +1,6 @@
 # LogPy - Your Log Analysis Tool
 
-![License](https://img.shields.io/github/license/your_username/logpy)
+<!-- ![License](https://img.shields.io/github/license/your_username/logpy) -->
 
 ## Overview
 
