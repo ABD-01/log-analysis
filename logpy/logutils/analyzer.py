@@ -1,5 +1,6 @@
 from datetime import datetime
 from os import mkdir
+import sys
 import os.path as osp
 from tabulate import tabulate
 
@@ -13,7 +14,7 @@ class LogAnalyzer:
         self.disable_progresslive = args.disable_progresslive
         self.output = ""
         
-        self.total_lines = 0
+        self.total_lines = self.get_total_lines()
         self.start_time = None
         self.end_time = None
 
@@ -24,6 +25,7 @@ class LogAnalyzer:
                 mkdir("analysedlogs")
             self.out_log_file_path = "analysedlogs/" + "out_" + str(osp.basename(args.log_file))
         self.out_log_file = open(self.out_log_file_path, "w", encoding='utf-8')
+        self.GUI = args.GUI
 
     def add_log_type(self, logtype:BasicLog):
             self.logslist.append(logtype)
@@ -41,8 +43,10 @@ class LogAnalyzer:
                 loader = logs_file
             else:
                 from tqdm import tqdm
-                loader = tqdm(logs_file, total=self.get_total_lines())
+                loader = tqdm(logs_file, total=self.total_lines)
 
+            if self.GUI:
+                sys.stdout.set_progress(0)
             for line_no, line in enumerate(loader, start=1):
                 for logtype in self.logslist:
                     # output = logtype(line, flags = re.I if self.ignore_case else 0)
@@ -54,11 +58,17 @@ class LogAnalyzer:
                     if output == 1:
                         self.out_log_file.write(f"{line_no: 6d} : {line}")
                         break
+                
+                if self.GUI:
+                    sys.stdout.set_progress(int((line_no/self.total_lines)*100))
 
                 if not self.start_time:
                     self.start_time = line[1:20]
                 if len(line) > 21:
                     self.end_time = line[1:20]
+
+            if self.GUI:
+                sys.stdout.set_progress(100)
 
     def calculate_duration(self):
         if self.start_time and self.end_time:
@@ -77,8 +87,9 @@ class LogAnalyzer:
         for l in self.logslist:
             l.print_summary(tbl, show_empty)
 
-        self.output = str(tabulate(tbl, headers="firstrow", tablefmt='fancy_grid', ))
+        self.output = str(tabulate(tbl, headers="firstrow", tablefmt='grid', ))
         self.out_log_file.write(f'\n\n{"="*100}\nSummary:\n')
         self.out_log_file.write(self.output)
         self.out_log_file.close()
-        print(self.output)
+        # print(self.output)
+        return self.output

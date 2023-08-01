@@ -1,4 +1,5 @@
 import argparse
+import sys
 import warnings
 from tabulate import tabulate
 
@@ -24,6 +25,8 @@ def Parser(**kwargs):
             for subfunc in v:
                 module_parser.add_argument(f"--{subfunc}", action="store_true", help=f"{subfunc.upper()} related log analysis")
 
+    group = parser.add_argument_group('hidden arguments')
+    group.add_argument("--GUI", action="store_true", help=argparse.SUPPRESS)
     return parser
 
 # For testing purposes only
@@ -49,5 +52,8 @@ if __name__ == "__main__":
         value = getattr(args, arg)
         arg_type = type(value).__name__
         table.append([arg, value, arg_type])
+
+    if not args.GUI:
+        sys.stdout = sys.__stdout__
 
     print(tabulate(table, headers=["Argument", "Value", "Type"], tablefmt="fancy_grid"))

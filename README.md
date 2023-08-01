@@ -18,7 +18,7 @@ LogPy is a command-line tool designed for log analysis. It allows you to parse l
 
 To install LogPy, you can use the distributable package provided by the developer. Follow the instructions below to install LogPy on your system:
 
-```bash
+```
 pip install logpy-1.2.1-py3-none-any.whl
 ```
 
@@ -28,7 +28,7 @@ Replace `logpy-1.2.1-py3-none-any.whl` with the correct filename of the package.
 
 After installing LogPy, you can use it from the command line as follows:
 
-```bash
+```
 logpy --help
 ```
 
@@ -39,22 +39,22 @@ This will display the available command-line options and usage instructions.
 Here are some examples of how to use LogPy:
 
 - Analyze network module related logs with TCP and MQTT analysis:
-```bash
+```
 logpy -m network --tcp --mqtt -l /path/to/logfile.txt
 ```
 
 - Perform sleep module related log analysis with wake and sleep cycle analysis:
-```bash
+```
 logpy -m sleep -l /path/to/logfile.txt
 ```
 
 - Search for additional keywords in log file
-```bash
+```
 logpy -k FALCON WATCHDOG -l /path/to/logfile.txt
 ```
 
 - Perform analysis of all modules:
-```bash
+```
 logpy --all -l /path/to/logfile.txt
 ```
 
