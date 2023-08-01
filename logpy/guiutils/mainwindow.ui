@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Log Analysis</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="log_file_label">
+      <property name="text">
+       <string>Log File:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLineEdit" name="log_file_lineedit"/>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="log_file_button">
+      <property name="text">
+       <string>Browse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="out_file_label">
+      <property name="text">
+       <string>Output File:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QLineEdit" name="out_file_lineedit"/>
+    </item>
+    <item row="3" column="2">
+     <widget class="QPushButton" name="out_file_button">
+      <property name="text">
+       <string>Browse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QLabel" name="keywords_label">
+      <property name="text">
+       <string>Keywords (separated by ';'):</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="3">
+     <widget class="QLineEdit" name="keywords_lineedit"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QCheckBox" name="ignore_case_checkbox">
+      <property name="text">
+       <string>Ignore Case</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QCheckBox" name="show_empty_checkbox">
+      <property name="text">
+       <string>Show Empty Values</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0" colspan="3">
+     <widget class="QPushButton" name="start_button">
+      <property name="text">
+       <string>Start Analysis</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0" colspan="3">
+     <widget class="QProgressBar" name="progress_bar">
+      <property name="value">
+       <number>24</number>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0" colspan="3">
+     <widget class="QTextBrowser" name="output_textedit">
+      <property name="styleSheet">
+       <string notr="true">background:black;
+font: 10pt &quot;Terminal&quot;;
+color:white;</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuModule">
+    <property name="title">
+     <string>Module</string>
+    </property>
+    <widget class="QMenu" name="menuAll">
+     <property name="title">
+      <string>Select Module</string>
+     </property>
+     <addaction name="actionNetwork"/>
+     <addaction name="actionSleep"/>
+    </widget>
+    <widget class="QMenu" name="menuNetwork">
+     <property name="title">
+      <string>Network</string>
+     </property>
+     <addaction name="actionTCP"/>
+     <addaction name="actionMQTT"/>
+    </widget>
+    <widget class="QMenu" name="menuSleep">
+     <property name="title">
+      <string>Sleep</string>
+     </property>
+     <addaction name="actionIgnition"/>
+     <addaction name="actionSleep_Cycle"/>
+    </widget>
+    <addaction name="menuAll"/>
+    <addaction name="separator"/>
+    <addaction name="menuNetwork"/>
+    <addaction name="menuSleep"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionIgnore_Case"/>
+    <addaction name="actionShow_Empty_Values"/>
+    <addaction name="actionClear_Output"/>
+    <addaction name="actionTheme"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionREADME"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuModule"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNetwork">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Network</string>
+   </property>
+  </action>
+  <action name="actionSleep">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Sleep</string>
+   </property>
+  </action>
+  <action name="actionTCP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TCP</string>
+   </property>
+  </action>
+  <action name="actionMQTT">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>MQTT</string>
+   </property>
+  </action>
+  <action name="actionIgnition">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ignition</string>
+   </property>
+  </action>
+  <action name="actionSleep_Cycle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Sleep Cycle</string>
+   </property>
+  </action>
+  <action name="actionIgnore_Case">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ignore Case</string>
+   </property>
+  </action>
+  <action name="actionShow_Empty_Values">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Empty Values</string>
+   </property>
+  </action>
+  <action name="actionREADME">
+   <property name="text">
+    <string>README</string>
+   </property>
+  </action>
+  <action name="actionClear_Output">
+   <property name="text">
+    <string>Clear Output</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionTheme">
+   <property name="text">
+    <string>Toggle Theme</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>log_file_lineedit</tabstop>
+  <tabstop>log_file_button</tabstop>
+  <tabstop>out_file_lineedit</tabstop>
+  <tabstop>out_file_button</tabstop>
+  <tabstop>keywords_lineedit</tabstop>
+  <tabstop>ignore_case_checkbox</tabstop>
+  <tabstop>show_empty_checkbox</tabstop>
+  <tabstop>start_button</tabstop>
+  <tabstop>output_textedit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

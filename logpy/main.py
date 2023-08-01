@@ -43,7 +43,7 @@ def main():
             )
         
         log_analyzer.analyze()
-        log_analyzer.print_summary(p.show_empty)
+        print(log_analyzer.print_summary(p.show_empty))
     
     except Exception as e:
         logging.error(f"An error occurred {e}")
