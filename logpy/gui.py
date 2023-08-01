@@ -98,6 +98,7 @@ class LogPyGUI(QMainWindow):
         )
         if file_name:
             self.ui.log_file_lineedit.setText(file_name)
+            self.ui.out_file_lineedit.clear()
 
     
     def moduleSelected(self, module):
@@ -160,10 +161,9 @@ class LogPyGUI(QMainWindow):
         self.ui.output_textedit.clear()
 
     def finished(self):
-        # message_box = QMessageBox.NoIcon(self, "Finished", "Log Analysis Finished")
-        # message_box.exec()
-        print("LOG ANALYSIS COMPLETE")
-        self.ui.start_button.setEnabled(True)
+        QMessageBox.about(self, "Finished", "Log Analysis Finished")
+        # print("LOG ANALYSIS COMPLETE")
+        # self.ui.start_button.setEnabled(True)
 
     def get_args(self):
         log_file_path = self.ui.log_file_lineedit.text()
@@ -234,7 +234,6 @@ class LogPyGUI(QMainWindow):
 
         analysis_thread = threading.Thread(target=main())
         analysis_thread.start()
-        analysis_thread.join()
 
     def __del__(self):
         sys.stdout = sys.__stdout__

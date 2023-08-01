@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "logpy"
-version = "1.3.2"
+version = "1.3.3"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
 description = "Your Log Analysis Tool"
 license = "GNU General Public License v2.0"
@@ -24,4 +24,4 @@ Markdown = "^3.4.4"
 [tool.poetry.scripts]
 logpy = "logpy.main:main"
 logpy-gui = "logpy.gui:gui"
-logpy-guidevel = "logpy.gui_devel:gui"
+logpy-gui2 = "logpy.gui_devel:gui"
