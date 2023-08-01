@@ -17,8 +17,11 @@ tabulate = "^0.8"
 easydict = "^1.9"
 argparse = "^1.1"
 tqdm = "^4.62"
+PySide6 = "^6.5.2"
+pyqtdarktheme = "^2.1.0"
+Markdown = "^3.4.4"
 
 [tool.poetry.scripts]
 logpy = "logpy.main:main"
 logpy-gui = "logpy.gui:gui"
-logpy-gui-devel = "logpy.gui_devel.gui"
+logpy-guidevel = "logpy.gui_devel:gui"

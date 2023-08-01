@@ -2,32 +2,20 @@ import os.path as osp
 import re
 import sys
 import threading
-import traceback
-from functools import partial
-from os import makedirs, mkdir
-
+from os import makedirs
 from pathlib import Path
+
 import markdown
-from easydict import EasyDict
-from guiutils.helpDialog import HelpDialog
-from guiutils.ui_mainwindow import Ui_MainWindow
-from logutils import MODULE_ADDLOG, MODULE_SUBFUNCTIONS, BasicLog, LogAnalyzer
-from PySide6.QtCore import (Property, QThread, QFile, QIODevice, QObject, QRunnable, Qt,
-                            QThreadPool, QUrl, Signal, Slot)
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QShortcut, QKeySequence
-from PySide6.QtWebChannel import QWebChannel
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QFileDialog,
-                               QHBoxLayout, QLabel, QLineEdit, QMainWindow,
-                               QMenuBar, QMessageBox, QProgressBar,
-                               QPushButton, QTextBrowser, QTextEdit,
-                               QVBoxLayout, QWidget)
 # from qt_material import QtStyleTools, apply_stylesheet
 import qdarktheme
-from tqdm import tqdm
+from easydict import EasyDict
+from PySide6.QtCore import QObject, QThreadPool, Signal
+from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow,
+                               QMessageBox)
 
-import main
+from .main import main
+from .guiutils.helpDialog import HelpDialog
+from .guiutils.ui_mainwindow import Ui_MainWindow
 
 class EmittingStream(QObject):
     textWritten = Signal(str)
@@ -181,10 +169,10 @@ class LogPyGUI(QMainWindow):
         log_file_path = self.ui.log_file_lineedit.text()
         if len(log_file_path) == 0:
             QMessageBox.critical(self, "Error", "No log file selected")
-            return
+            return False
         if not osp.exists(log_file_path):
             messagebox = QMessageBox.warning(self, "File Error", "Log file not found. \nPlease select a valid log file")
-            return
+            return False
 
         out_file = self.ui.out_file_lineedit.text()
         if len(out_file) == 0:
@@ -202,15 +190,23 @@ class LogPyGUI(QMainWindow):
 
         # self.args.ignore_case = self.ui.ignore_case_checkbox.isChecked()
         # self.args.show_empty = self.ui.show_empty_checkbox.isChecked()
-        
-        self.args.tcp = self.ui.actionTCP.isChecked()
-        self.args.mqtt = self.ui.actionMQTT.isChecked()
-        self.args.ignition = self.ui.actionIgnition.isChecked()
-        self.args.sleepcycle = self.ui.actionSleep_Cycle.isChecked()
 
+        if self.ui.actionNetwork.isChecked():
+            self.args.module = "network"
+            self.args.tcp = self.ui.actionTCP.isChecked()
+            self.args.mqtt = self.ui.actionMQTT.isChecked()
+        elif self.ui.actionSleep.isChecked():
+            self.args.module = "sleep"
+            self.args.ignition = self.ui.actionIgnition.isChecked()
+            self.args.sleepcycle = self.ui.actionSleep_Cycle.isChecked()
+        else:
+            self.args.all = True
+
+        return True
 
     def start_analysis(self):
-        self.get_args()
+        if not self.get_args():
+            return
 
         command = ["logpy"]
         command.extend(["-l", self.args.log_file])
@@ -236,7 +232,7 @@ class LogPyGUI(QMainWindow):
         stream.textWritten.connect(self.showOuput)
         stream.progress.connect(self.setProgress)
 
-        analysis_thread = threading.Thread(target=main.main())
+        analysis_thread = threading.Thread(target=main())
         analysis_thread.start()
         analysis_thread.join()
 
