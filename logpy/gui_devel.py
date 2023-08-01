@@ -9,7 +9,7 @@ import markdown
 # from qt_material import QtStyleTools, apply_stylesheet
 import qdarktheme
 from easydict import EasyDict
-from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, QThread
 from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow,
                                QMessageBox)
 
@@ -17,18 +17,31 @@ from .guiutils.helpDialog import HelpDialog
 from .guiutils.ui_mainwindow import Ui_MainWindow
 from .logutils import MODULE_ADDLOG, MODULE_SUBFUNCTIONS, BasicLog, LogAnalyzer
 
+class EmittingStream(QObject):
+    textWritten = Signal(str)
+    progress = Signal(int)
+    def write(self, text):
+        self.textWritten.emit(text)
+
+    def set_progress(self, value):
+        self.progress.emit(value)
+
+    def flush(self):
+        pass
+
 class WorkerSignals(QObject):
     finished = Signal()
     error = Signal(tuple)
     result = Signal(object)
     progress = Signal(int)
 
+# class Worker(QObject):
 class Worker(QRunnable):
     def __init__(self, args):
         super(Worker, self).__init__()
         self.p = args
-        self.p.disable_progresslive = False #temp
-        self.p.GUI=False# temp
+        # self.p.disable_progresslive = True #temp
+        self.p.GUI=True# temp
         self.signals = WorkerSignals()
 
     def AnalyzeLogs(self, p, progress_callback):
@@ -55,10 +68,10 @@ class Worker(QRunnable):
         for kw in p.keywords:
             log_analyzer.add_log_type(BasicLog(kw, kw, ignore_case=p.ignore_case))
         
-        log_analyzer.analyze()
+        log_analyzer.analyze(progress_callback)
         return log_analyzer.print_summary(p.show_empty)
 
-    @Slot()
+    @Slot() # comment if using QObject
     def run(self):
 
         try:
@@ -145,6 +158,7 @@ class LogPyGUI(QMainWindow):
         )
         if file_name:
             self.ui.log_file_lineedit.setText(file_name)
+            self.ui.out_file_lineedit.clear()
 
     
     def moduleSelected(self, module):
@@ -208,10 +222,10 @@ class LogPyGUI(QMainWindow):
         self.ui.output_textedit.clear()
 
     def finished(self):
-        # message_box = QMessageBox.NoIcon(self, "Finished", "Log Analysis Finished")
-        # message_box.exec()
-        print("LOG ANALYSIS COMPLETE")
-        self.ui.start_button.setEnabled(True)
+        QMessageBox.about(self, "Finished", "Log Analysis Finished")
+        # print("LOG ANALYSIS COMPLETE")
+        # self.ui.start_button.setEnabled(True)
+        # self.thread.quit()
 
     def get_args(self):
         log_file_path = self.ui.log_file_lineedit.text()
@@ -257,13 +271,17 @@ class LogPyGUI(QMainWindow):
         if not self.get_args():
             return
         # self.ui.start_button.setEnabled(False)
-
+        # self.thread = QThread()
         self.worker = Worker(self.args) 
+        # self.worker.moveToThread(self.thread) #incase if Worker is QObject
         self.worker.signals.result.connect(self.showOuput)
         self.worker.signals.finished.connect(self.finished)
         self.worker.signals.progress.connect(self.setProgress)
 
         self.threadpool.start(self.worker)
+        # if using QThread
+        # self.thread.started.connect(self.worker.run)
+        # self.thread.finished.connect(self.thread.quit)
         # self.worker.start()
 
 def gui():

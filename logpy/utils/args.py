@@ -2,11 +2,14 @@ import argparse
 import sys
 import warnings
 from tabulate import tabulate
+import textwrap
 
 
 def Parser(**kwargs):
-    
-    parser = argparse.ArgumentParser(description="Log Analysis", formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=32))
+    description = textwrap.dedent(
+        '''Log Analysis Command Line Tool.
+For GUI based tool use: `logpy-gui` or `logpy-gui2`''')
+    parser = argparse.ArgumentParser(description=description, prog="logpy", formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog,max_help_position=32))
     parser.add_argument("-l", "--log-file", type=str, help="Path to log file", required=True)
     parser.add_argument("-o", "--out-file", type=str, help="Path to output log file")
     parser.add_argument("-k", "--keywords", nargs='*', default=[], metavar="eg: FALCON, WATCHDOG, etc", help="Provide Additional Keywords to be added")
