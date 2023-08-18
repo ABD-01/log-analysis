@@ -125,9 +125,7 @@ This will create a **`.tar.gz`** file in the **`dist`** directory
 > See [Why you shouldn’t invoke setup.py directly](https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html) for more background.
 > 
 > — From: [Quickstart - setuptools 68.1.2.post20230818 documentation (pypa.io)](https://setuptools.pypa.io/en/latest/userguide/quickstart.html#basic-use)
-
-
-
+<br></br>
 > The Python packaging community is moving towards using declarative configuration files like **`pyproject.toml`** or **`setup.cfg`** instead of relying on the traditional **`setup.py`** script. This is part of the Python Packaging Authority (PyPA) initiative to improve the packaging ecosystem.
 > 
 > 
