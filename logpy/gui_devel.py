@@ -194,7 +194,9 @@ class LogPyGUI(QMainWindow):
         return func
 
     def showREADME(self):
-        readme_path = Path("C:/Users/Muhammed/projects/log_analysis/README.md")
+        readme_path = Path("README.md")
+        if not osp.exists(readme_path):
+            QMessageBox.warning(self, "Error", "README.md not found")
         with open(readme_path, "r") as readme_file:
             markdown_content = readme_file.read()
 
@@ -296,7 +298,7 @@ class LogPyGUI(QMainWindow):
 
 def gui():
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon(osp.join(osp.dirname(__file__),"guiutils/results-icon.ico")))
+    app.setWindowIcon(QIcon(osp.join(osp.dirname(__file__),"icons/results-icon.ico")))
     window = LogPyGUI()
     qdarktheme.setup_theme()
     # apply_stylesheet(app, theme='dark_amber.xml')
