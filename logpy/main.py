@@ -1,9 +1,9 @@
 import logging
 logging.basicConfig(format="%(asctime)s - %(levelname)s : %(message)s", datefmt="%d-%b-%y %H:%M:%S")
 
-from .utils import Parser
-from .logutils import MODULE_SUBFUNCTIONS, MODULE_ADDLOG
-from .logutils import LogAnalyzer, BasicLog
+from utils import Parser
+from logutils import MODULE_SUBFUNCTIONS, MODULE_ADDLOG
+from logutils import LogAnalyzer, BasicLog
 
 
 def main():
