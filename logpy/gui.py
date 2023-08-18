@@ -12,10 +12,11 @@ from easydict import EasyDict
 from PySide6.QtCore import QObject, QThreadPool, Signal
 from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow,
                                QMessageBox)
+from PySide6.QtGui import QIcon
 
-from .main import main
-from .guiutils.helpDialog import HelpDialog
-from .guiutils.ui_mainwindow import Ui_MainWindow
+from main import main
+from guiutils.helpDialog import HelpDialog
+from guiutils.ui_mainwindow import Ui_MainWindow
 
 class EmittingStream(QObject):
     textWritten = Signal(str)
@@ -240,6 +241,7 @@ class LogPyGUI(QMainWindow):
 
 def gui():
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(osp.join(osp.dirname(__file__),"guiutils/results-icon.ico")))
     window = LogPyGUI()
     qdarktheme.setup_theme()
     # apply_stylesheet(app, theme='dark_amber.xml')
@@ -247,10 +249,4 @@ def gui():
     sys.exit(app.exec())
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = LogPyGUI()
-    # apply_stylesheet(app, theme='dark_purple.xml')
-    qdarktheme.setup_theme()
-
-    window.show()
-    sys.exit(app.exec())
+    gui()
