@@ -10,13 +10,22 @@ import markdown
 import qdarktheme
 from easydict import EasyDict
 from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, QThread
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow,
                                QMessageBox)
-from PySide6.QtGui import QIcon
 
 from guiutils.helpDialog import HelpDialog
 from guiutils.ui_mainwindow import Ui_MainWindow
 from logutils import MODULE_ADDLOG, MODULE_SUBFUNCTIONS, BasicLog, LogAnalyzer
+
+
+try:
+    from ctypes import windll  # Only exists on Windows.
+    myappid = 'AEPL.ATCU.LogPy.1'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
+
 
 class EmittingStream(QObject):
     textWritten = Signal(str)

@@ -86,9 +86,11 @@ class LogAnalyzer:
         if self.start_time and self.end_time:
             start_datetime = datetime.strptime(self.start_time, '%Y-%m-%d %H:%M:%S')
             end_datetime = datetime.strptime(self.end_time, '%Y-%m-%d %H:%M:%S')
-            duration = divmod((end_datetime - start_datetime).total_seconds(), 60)
-            hours, minutes = divmod(duration[0] % 1440, 60)
-            return f"{int(hours)} hrs, {int(minutes)} mins"
+            duration = end_datetime - start_datetime
+            days = duration.days
+            mins = duration.seconds // 60
+            hours, minutes = divmod(mins, 60)
+            return f"{f'{days} days, ' if days > 0 else ''}{int(hours)} hrs, {int(minutes)} mins"
         return None
 
     def print_summary(self, show_empty=False):
