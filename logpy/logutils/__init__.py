@@ -17,6 +17,10 @@ from .sleep import (
     Ignition,
 )
 
+from .storage import (
+    AIS140,
+    CVP
+)
 
 def add_tcp_logs(la:LogAnalyzer, p):
     la.add_log_type(QIOpen("TCP Port Open", ignore_case=p.ignore_case))
@@ -35,12 +39,19 @@ def add_sleep_logs(la: LogAnalyzer, p):
 def add_ignition_logs(la: LogAnalyzer, p):
     la.add_log_type(Ignition("Ignition", ignore_case=p.ignore_case))
 
+def add_ais_storage_logs(la: LogAnalyzer, p):
+    la.add_log_type(AIS140("AIS140", ignore_case=p.ignore_case, log_file_path=p.log_file))
+def add_cvp_storage_logs(la: LogAnalyzer, p):
+    la.add_log_type(CVP("CVP", ignore_case=p.ignore_case, log_file_path=p.log_file))
+
 MODULE_SUBFUNCTIONS = {
     "network": ["tcp", "mqtt"],
-    "sleep": ["ignition", "sleepcycle"]
+    "sleep": ["ignition", "sleepcycle"],
+    "storage": ["ais140", "cvp"]
     }
 
 MODULE_ADDLOG = {
     "network" : {"tcp": add_tcp_logs, "mqtt": add_mqtt_logs},
-    "sleep" : {"sleepcycle": add_sleep_logs, "ignition": add_ignition_logs}
+    "sleep" : {"sleepcycle": add_sleep_logs, "ignition": add_ignition_logs},
+    "storage": {"ais": add_ais_storage_logs, "cvp": add_cvp_storage_logs}
 }

@@ -11,6 +11,7 @@ class _BasicLog:
         self.result_dict = EasyDict({"Count": 0})
 
     def print_summary(self, table, se):
+        # se is show_empty
         for k,v in self.result_dict.items():
             if isinstance(v, dict):
                 flag = 1
