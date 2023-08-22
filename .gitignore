@@ -34,6 +34,9 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# ide
+.vscode/
+
 # Log Files
 logs/
 analysedlogs/

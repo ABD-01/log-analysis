@@ -20,8 +20,9 @@ tqdm = "^4.62"
 PySide6 = "^6.5.2"
 pyqtdarktheme = "^2.1.0"
 Markdown = "^3.4.4"
+pandas = "^1.1"
 
 [tool.poetry.scripts]
 logpy = "logpy.main:main"
-logpy-gui = "logpy.gui:gui"
-logpy-gui2 = "logpy.gui_devel:gui"
+logpy-gui = "logpy.gui_devel:gui"
+logpy-gui2 = "logpy.gui:gui"

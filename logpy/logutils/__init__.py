@@ -53,5 +53,5 @@ MODULE_SUBFUNCTIONS = {
 MODULE_ADDLOG = {
     "network" : {"tcp": add_tcp_logs, "mqtt": add_mqtt_logs},
     "sleep" : {"sleepcycle": add_sleep_logs, "ignition": add_ignition_logs},
-    "storage": {"ais": add_ais_storage_logs, "cvp": add_cvp_storage_logs}
+    "storage": {"ais140": add_ais_storage_logs, "cvp": add_cvp_storage_logs}
 }

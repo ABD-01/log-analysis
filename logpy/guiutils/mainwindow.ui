@@ -128,6 +128,7 @@ color:white;</string>
      </property>
      <addaction name="actionNetwork"/>
      <addaction name="actionSleep"/>
+     <addaction name="actionStorage"/>
     </widget>
     <widget class="QMenu" name="menuNetwork">
      <property name="title">
@@ -143,10 +144,18 @@ color:white;</string>
      <addaction name="actionIgnition"/>
      <addaction name="actionSleep_Cycle"/>
     </widget>
+    <widget class="QMenu" name="menuStorage">
+     <property name="title">
+      <string>Storage</string>
+     </property>
+     <addaction name="actionAIS140"/>
+     <addaction name="actionCVP"/>
+    </widget>
     <addaction name="menuAll"/>
     <addaction name="separator"/>
     <addaction name="menuNetwork"/>
     <addaction name="menuSleep"/>
+    <addaction name="menuStorage"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -264,6 +273,30 @@ color:white;</string>
   <action name="actionTheme">
    <property name="text">
     <string>Toggle Theme</string>
+   </property>
+  </action>
+  <action name="actionStorage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Storage</string>
+   </property>
+  </action>
+  <action name="actionAIS140">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AIS140</string>
+   </property>
+  </action>
+  <action name="actionCVP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>CVP</string>
    </property>
   </action>
  </widget>
