@@ -52,8 +52,10 @@ class LogPyGUI(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        ## Disable SubMenus for Module
         self.ui.menuNetwork.setEnabled(False)
         self.ui.menuSleep.setEnabled(False)
+        self.ui.menuStorage.setEnabled(False)
 
         self.ui.progress_bar.setValue(0)
 
@@ -77,14 +79,18 @@ class LogPyGUI(QMainWindow):
         self.args.mqtt=False
         self.args.ignition=False
         self.args.sleepcycle=False
+        self.args.ais140=False
+        self.args.cvp=False
 
     def link_actions(self):
 
         self.ui.actionOpen.triggered.connect(self.open)
         self.ui.actionExit.triggered.connect(self.close)
 
+        ## Connect to function returned by moduleSelected decorator
         self.ui.actionNetwork.triggered.connect(self.moduleSelected("network"))
         self.ui.actionSleep.triggered.connect(self.moduleSelected("sleep"))
+        self.ui.actionStorage.triggered.connect(self.moduleSelected("storage"))
 
         self.ui.actionIgnore_Case.triggered.connect(self.settings("ignore_case"))
         self.ui.actionShow_Empty_Values.triggered.connect(self.settings("show_empty"))
@@ -113,7 +119,8 @@ class LogPyGUI(QMainWindow):
     
     def moduleSelected(self, module):
         actions = {"network": self.ui.menuNetwork,
-                    "sleep": self.ui.menuSleep}
+                    "sleep": self.ui.menuSleep,
+                    "storage": self.ui.menuStorage}
         def func(arg):
             actions[module].setEnabled(arg)
             self.args.module = module
@@ -211,6 +218,10 @@ class LogPyGUI(QMainWindow):
             self.args.module = "sleep"
             self.args.ignition = self.ui.actionIgnition.isChecked()
             self.args.sleepcycle = self.ui.actionSleep_Cycle.isChecked()
+        elif self.ui.actionStorage.isChecked():
+            self.args.module = "storage"
+            self.args.ais140 = self.ui.actionAIS140.isChecked()
+            self.args.cvp = self.ui.actionCVP.isChecked()
         else:
             self.args.all = True
 
@@ -261,3 +272,6 @@ def gui():
 
 if __name__ == "__main__":
     gui()
+
+
+##  .\pyside6-uic.exe C:\Users\Muhammed\projects\log_analysis\logpy\guiutils\mainwindow.ui -o C:\Users\Muhammed\projects\log_analysis\logpy\guiutils\ui_mainwindow.py
