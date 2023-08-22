@@ -4,6 +4,7 @@ import warnings
 from tabulate import tabulate
 import textwrap
 
+from .version import __version__
 
 def Parser(**kwargs):
     description = textwrap.dedent(
@@ -27,6 +28,8 @@ For GUI based tool use: `logpy-gui` or `logpy-gui2`''')
             module_parser = parser.add_argument_group(k.title(), description=f"{k.title()} related log analysis")
             for subfunc in v:
                 module_parser.add_argument(f"--{subfunc}", action="store_true", help=f"{subfunc.upper()} related log analysis")
+
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}", help="Show version")
 
     group = parser.add_argument_group('hidden arguments')
     group.add_argument("--GUI", action="store_true", help=argparse.SUPPRESS)
