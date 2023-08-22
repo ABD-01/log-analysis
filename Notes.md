@@ -295,7 +295,8 @@ Making .spec files:
     		--noconsole `
     		--icon=logpy/guiutils/results-icon.ico `
     		--add-data="README.md;." `
-    		--add-data="logpy/guiutils/results-icon.ico;icons"
+    		--add-data="logpy/guiutils/results-icon.ico;icons" `
+    		--add-data="logpy/guiutils/analysis-icon.ico;icons"
     ```
     
 
