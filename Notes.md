@@ -36,6 +36,7 @@ Ref:
 
 # Starting a python script in new thread
 
+## 1. Using threading Module
 
 ```python
 from PySide6.QtCore import QObject, QThreadPool, Signal
@@ -69,6 +70,136 @@ class LogPyGUI(QMainWindow):
 	# To reset the sys.stdout back to default
 	def __del__(self):
 		sys.stdout = sys.__stdout__
+```
+
+## 2. Using QRunnable
+
+```python
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, QThread
+
+class WorkerSignals(QObject):
+    finished = Signal()
+    error = Signal(tuple)
+    result = Signal(object)
+    progress = Signal(int)
+
+class Worker(QRunnable):
+    def __init__(self, args):
+        super(Worker, self).__init__()
+        self.p = args
+        self.signals = WorkerSignals()
+
+    def AnalyzeLogs(self, p, progress_callback):
+        log_analyzer = LogAnalyzer(p)
+				...
+        return log_analyzer.print_summary()
+
+    @Slot()
+    def run(self):
+
+        try:
+           output = self.AnalyzeLogs(self.p, self.signals.progress)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(output)
+        finally:
+            self.signals.finished.emit()
+
+class LogPyGUI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+				...
+        self.threadpool = QThreadPool()
+				...
+				self.ui.start_button.clicked.connect(self.start_a)
+				...
+
+    def finished(self):
+        QMessageBox.about(self, "Finished", "Log Analysis Finished")
+
+    @Slot()
+    def start(self):
+        if not self.get_args():
+            return
+
+        self.worker = Worker(self.args) 
+        self.worker.signals.result.connect(self.showOuput)
+        self.worker.signals.finished.connect(self.finished)
+        self.worker.signals.progress.connect(self.setProgress)
+
+        self.threadpool.start(self.worker)
+```
+
+## 3. Using QObject and QThread
+
+Reference: [QThread - Qt for Python](https://doc.qt.io/qtforpython-6/PySide6/QtCore/QThread.html)
+
+```python
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, QThread
+
+class WorkerSignals(QObject):
+    finished = Signal()
+    error = Signal(tuple)
+    result = Signal(object)
+    progress = Signal(int)
+
+class Worker(QObject):
+    def __init__(self, args):
+        super(Worker, self).__init__()
+        self.p = args
+        self.signals = WorkerSignals()
+
+    def AnalyzeLogs(self, p, progress_callback):
+        return log_analyzer.print_summary()
+
+    def run(self):
+
+        try:
+           output = self.AnalyzeLogs(self.p, self.signals.progress)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(output)
+        finally:
+            self.signals.finished.emit()
+
+class LogPyGUI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+				...
+        self.threadpool = QThreadPool()
+				...
+				self.ui.start_button.clicked.connect(self.start_analysis)
+				...
+
+    def finished(self):
+        QMessageBox.about(self, "Finished", "Log Analysis Finished")
+        print("LOG ANALYSIS COMPLETE")
+        self.ui.start_button.setEnabled(True)
+        self.thread.quit()
+
+    @Slot()
+    def start(self):
+        if not self.get_args():
+            return
+        self.ui.start_button.setEnabled(False)
+
+        self.thread = QThread()
+        self.worker = Worker(self.args) 
+        self.worker.moveToThread(self.thread)
+        self.worker.signals.result.connect(self.showOuput)
+        self.worker.signals.finished.connect(self.finished)
+        self.worker.signals.progress.connect(self.setProgress)
+
+        self.thread.started.connect(self.worker.run)
+        self.thread.finished.connect(self.thread.quit)
+        self.worker.start()
+
 ```
 
 # Creating Python Package
