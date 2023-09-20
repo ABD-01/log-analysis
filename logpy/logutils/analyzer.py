@@ -31,7 +31,7 @@ class LogAnalyzer:
             self.logslist.append(logtype)
 
     def get_total_lines(self):
-        with open(self.log_file_path, 'r') as file:
+        with open(self.log_file_path, 'r', errors='ignore') as file:
             self.total_lines= sum(1 for _ in file)
             return self.total_lines
         # return open(self.log_file_path).read().count("\n")
@@ -44,7 +44,7 @@ class LogAnalyzer:
 
     def analyze(self, signal=None):
         self.signal = signal
-        with open(self.log_file_path, 'r') as logs_file:
+        with open(self.log_file_path, 'r', errors='ignore') as logs_file:
 
             if self.disable_progresslive:
                 loader = logs_file

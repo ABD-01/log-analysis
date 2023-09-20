@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "logpy"
-version = "1.4.0"
+version = "1.4.1"
 authors = ["Muhammed Abdullah Shaikh <muhammed.shaikh@accoladeelectronics.com>"]
 description = "Your Log Analysis Tool"
 license = "GNU General Public License v2.0"
