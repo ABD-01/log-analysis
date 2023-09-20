@@ -47,11 +47,11 @@ def add_cvp_storage_logs(la: LogAnalyzer, p):
 MODULE_SUBFUNCTIONS = {
     "network": ["tcp", "mqtt"],
     "sleep": ["ignition", "sleepcycle"],
-    "storage": ["ais140", "cvp"]
+    # "storage": ["ais140", "cvp"]
     }
 
 MODULE_ADDLOG = {
     "network" : {"tcp": add_tcp_logs, "mqtt": add_mqtt_logs},
     "sleep" : {"sleepcycle": add_sleep_logs, "ignition": add_ignition_logs},
-    "storage": {"ais140": add_ais_storage_logs, "cvp": add_cvp_storage_logs}
+    # "storage": {"ais140": add_ais_storage_logs, "cvp": add_cvp_storage_logs}
 }
