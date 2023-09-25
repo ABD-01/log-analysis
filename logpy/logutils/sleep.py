@@ -63,4 +63,9 @@ class Ignition(BasicLog):
             self.on_counter += 1
             
         return 1
-
+ 
+    def print_summary(self, table, show_empty=False):
+        # Minor Chnages before parent method is called
+        self.result_dict.pop("Count")
+        # now call the super print summary
+        return super().print_summary(table, show_empty)
