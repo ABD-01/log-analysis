@@ -5,9 +5,9 @@ import os.path as osp
 from os import makedirs
 
 
-StoragePatters = EasyDict()
-StoragePatters.AIS140 = r"Insert \[3:/AIS140/Primary/\d+/\d+/\d+/(?P<id>\d+)]\sin\s(?P<time>\d+)\sms"
-StoragePatters.CVP = r"File 3:/History/TMLCVP/PVT/\d+/\d+/\d+/(?P<id>\d+)\s\[TMLCVP Insert for \d+B data took (?P<time>\d+) ms.\]"
+StoragePatterns = EasyDict()
+StoragePatterns.AIS140 = r"Insert \[3:/AIS140/Primary/\d+/\d+/\d+/(?P<id>\d+)]\sin\s(?P<time>\d+)\sms"
+StoragePatterns.CVP = r"File 3:/History/TMLCVP/PVT/\d+/\d+/\d+/(?P<id>\d+)\s\[TMLCVP Insert for \d+B data took (?P<time>\d+) ms.\]"
 
 
 
@@ -21,7 +21,8 @@ class Storage(BasicLog):
         matchdict = EasyDict(match.groupdict())
         self.dfList.append([int(matchdict.id), float(matchdict.time)])
         if self.name == "CVP":
-            return 1 # write to file
+            # return 1 # write to file
+            return 0 # no longer write to file
     
     def makedirs(self, log_file_path, name): 
         if log_file_path is None:
@@ -49,9 +50,9 @@ class Storage(BasicLog):
         # now call the super print summary
         return super().print_summary(table, show_empty)
 
-def AIS140(name, pattern=StoragePatters.AIS140, **kwargs):
+def AIS140(name, pattern=StoragePatterns.AIS140, **kwargs):
     return Storage(name, pattern, **kwargs)
 
 
-def CVP(name, pattern=StoragePatters.CVP, **kwargs):
+def CVP(name, pattern=StoragePatterns.CVP, **kwargs):
     return Storage(name, pattern, **kwargs)
