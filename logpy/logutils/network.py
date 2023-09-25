@@ -7,7 +7,9 @@ Network_Patterns.MQTT_PubResponse = (r"\+QMTPUBEX: (?P<client_id>\d),(?P<msg_id>
 Network_Patterns.TCPOpen = r"AT\+QIOPEN=(?P<context_id>\d+),(?P<connect_id>\d+),\"(?P<service_type>\w+)\",\"(?P<ip_address>[^\"]+)\",(?P<remote_port>\d+)"
 Network_Patterns.TCPOpenResponse = r"\+QIOPEN: (?P<connect_id>\d+),(?P<err>\d+)"
 Network_Patterns.Packets = r"(?P<Gov>\$1,)|(?P<Emergency>\$EPM,)|(?P<Accolade>55AA,)"
-
+Network_Patterns.Switching = r"\[NET\] current profile is (?P<current>\w+), switching to (?P<new>\w+)"
+Network_Patterns.PdpDeact = r"\+QIURC: \"pdpdeact\""
+Network_Patterns.Registration = r"\+(?P<reg>CG?REG): \d+,(?P<stat>\d)"
 
 class QMTPublish(BasicLog):
     def __init__(
@@ -116,3 +118,32 @@ class QISend(BasicLog):
             self.result_dict.PacketsSend.Accolade += 1
         
         return 0
+
+class NetSwitching(BasicLog):
+    def __init__(self, name, pattern=Network_Patterns.Switching, **kwargs):
+        super(NetSwitching, self).__init__(name, pattern, **kwargs)
+        self.result_dict.Switching = EasyDict()
+    
+    def update_counts(self, match):
+        matchdict = EasyDict(match.groupdict())
+        ## corresponding time at which the switch happened
+        self.result_dict.Switching[f"{self.result_dict.Count} {matchdict.current}=>{matchdict.new}"] = match.string[1:20]
+        return 0
+
+def PdpDeact(name, pattern=Network_Patterns.PdpDeact, **kwargs):
+    kwargs["writeToFile"] = 1
+    return BasicLog(name, pattern, **kwargs)
+
+class NetRegistration(BasicLog):
+    def __init__(self, name, pattern=Network_Patterns.Registration, **kwargs):
+        super(NetRegistration, self).__init__(name, pattern, **kwargs)
+        self.result_dict.Registration = EasyDict({
+            "CREG": EasyDict(Success = 0, Failure = 0),
+            "CGREG": EasyDict(Success = 0, Failure = 0)
+        })
+    
+    def update_counts(self, match):
+        matchdict = EasyDict(match.groupdict())
+        stat = int(matchdict.stat)
+        key = "Success" if stat in (1,5) else "Failure" # stat = 1 or stat = 5 means registerd or roaming respectively
+        self.result_dict.Registration[matchdict.reg.upper()][key] += 1
