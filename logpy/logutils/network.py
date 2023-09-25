@@ -3,7 +3,8 @@ from easydict import EasyDict
 
 Network_Patterns = EasyDict()
 Network_Patterns.MQTT_Publish = r"AT\+QMTPUBEX=(?P<client_id>\d),(?P<msg_id>\d+),(?P<qos>\d),(?P<retain>\d),\"(?P<topic>.+)\",(?P<msg_lenght>\d+)"
-Network_Patterns.MQTT_PubResponse = (r"\+QMTPUBEX: (?P<client_id>\d),(?P<msg_id>\d+),(?P<result>\d)")
+Network_Patterns.MQTT_PubResponse = r"\+QMTPUBEX: (?P<client_id>\d),(?P<msg_id>\d+),(?P<result>\d)"
+Network_Patterns.MQTT_STAT_URC = r"\+QMTSTAT: \d,\d+"
 Network_Patterns.TCPOpen = r"AT\+QIOPEN=(?P<context_id>\d+),(?P<connect_id>\d+),\"(?P<service_type>\w+)\",\"(?P<ip_address>[^\"]+)\",(?P<remote_port>\d+)"
 Network_Patterns.TCPOpenResponse = r"\+QIOPEN: (?P<connect_id>\d+),(?P<err>\d+)"
 Network_Patterns.Packets = r"(?P<Gov>\$1,)|(?P<Emergency>\$EPM,)|(?P<Accolade>55AA,)"
@@ -56,6 +57,9 @@ class QMTResponse(BasicLog):
         self.result_dict.QMTresponse.Failure += 1
         return 1
 
+def QMTStatUrc(name, pattern=Network_Patterns.MQTT_STAT_URC, **kwargs):
+    kwargs["writeToFile"] = 1
+    return BasicLog(name, pattern, **kwargs)
 
 class QIOpen(BasicLog):
     def __init__(self, name, pattern=Network_Patterns.TCPOpen, **kwargs):
@@ -147,3 +151,4 @@ class NetRegistration(BasicLog):
         stat = int(matchdict.stat)
         key = "Success" if stat in (1,5) else "Failure" # stat = 1 or stat = 5 means registerd or roaming respectively
         self.result_dict.Registration[matchdict.reg.upper()][key] += 1
+        return 1 # write to out log file
