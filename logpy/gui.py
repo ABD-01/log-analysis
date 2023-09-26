@@ -77,7 +77,8 @@ class Worker(QRunnable):
                             f(log_analyzer, p)
         
         for kw in p.keywords:
-            log_analyzer.add_log_type(BasicLog(kw, kw, ignore_case=p.ignore_case))
+            pattern = re.escape(kw)
+            log_analyzer.add_log_type(BasicLog(kw, pattern, ignore_case=p.ignore_case))
         
         log_analyzer.analyze(progress_callback)
         return log_analyzer.print_summary(p.show_empty)

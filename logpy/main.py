@@ -1,3 +1,4 @@
+import re
 import logging
 logging.basicConfig(format="%(asctime)s - %(levelname)s : %(message)s", datefmt="%d-%b-%y %H:%M:%S")
 
@@ -35,7 +36,8 @@ def main():
                             f(log_analyzer, p)
         
         for kw in p.keywords:
-            log_analyzer.add_log_type(BasicLog(kw, kw, ignore_case=p.ignore_case))
+            pattern = re.escape(kw)
+            log_analyzer.add_log_type(BasicLog(kw, pattern, ignore_case=p.ignore_case))
         
         if p.regex:
             logging.warning(
