@@ -122,40 +122,6 @@ color:white;</string>
     <property name="title">
      <string>Module</string>
     </property>
-    <widget class="QMenu" name="menuAll">
-     <property name="title">
-      <string>Select Module</string>
-     </property>
-     <addaction name="actionNetwork"/>
-     <addaction name="actionSleep"/>
-     <addaction name="actionStorage"/>
-    </widget>
-    <widget class="QMenu" name="menuNetwork">
-     <property name="title">
-      <string>Network</string>
-     </property>
-     <addaction name="actionTCP"/>
-     <addaction name="actionMQTT"/>
-    </widget>
-    <widget class="QMenu" name="menuSleep">
-     <property name="title">
-      <string>Sleep</string>
-     </property>
-     <addaction name="actionIgnition"/>
-     <addaction name="actionSleep_Cycle"/>
-    </widget>
-    <widget class="QMenu" name="menuStorage">
-     <property name="title">
-      <string>Storage</string>
-     </property>
-     <addaction name="actionAIS140"/>
-     <addaction name="actionCVP"/>
-    </widget>
-    <addaction name="menuAll"/>
-    <addaction name="separator"/>
-    <addaction name="menuNetwork"/>
-    <addaction name="menuSleep"/>
-    <addaction name="menuStorage"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -181,58 +147,13 @@ color:white;</string>
    <property name="text">
     <string>Open</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionNetwork">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Network</string>
-   </property>
-  </action>
-  <action name="actionSleep">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Sleep</string>
-   </property>
-  </action>
-  <action name="actionTCP">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>TCP</string>
-   </property>
-  </action>
-  <action name="actionMQTT">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>MQTT</string>
-   </property>
-  </action>
-  <action name="actionIgnition">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Ignition</string>
-   </property>
-  </action>
-  <action name="actionSleep_Cycle">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Sleep Cycle</string>
    </property>
   </action>
   <action name="actionIgnore_Case">
@@ -274,29 +195,8 @@ color:white;</string>
    <property name="text">
     <string>Toggle Theme</string>
    </property>
-  </action>
-  <action name="actionStorage">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Storage</string>
-   </property>
-  </action>
-  <action name="actionAIS140">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>AIS140</string>
-   </property>
-  </action>
-  <action name="actionCVP">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>CVP</string>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

@@ -2,7 +2,8 @@ import os.path as osp
 import re
 import sys
 import traceback
-from os import makedirs
+from os import makedirs, startfile
+import subprocess
 from pathlib import Path
 
 import markdown
@@ -10,7 +11,7 @@ import markdown
 import qdarktheme
 from easydict import EasyDict
 from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot, QThread
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QAction, QActionGroup
 from PySide6.QtWidgets import (QApplication, QFileDialog, QMainWindow,
                                QMessageBox)
 
@@ -104,18 +105,13 @@ class LogPyGUI(QMainWindow):
 
         self.initUI()
         self.initArgs()
+        self.add_menus()
         self.link_actions()
         self.threadpool = QThreadPool()
 
     def initUI(self):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
-        ## Disable SubMenus for Module
-        self.ui.menuNetwork.setEnabled(False)
-        self.ui.menuSleep.setEnabled(False)
-        self.ui.menuStorage.setEnabled(False)
-
         self.ui.progress_bar.setValue(0)
 
         self.theme = "dark"
@@ -134,22 +130,29 @@ class LogPyGUI(QMainWindow):
 
         self.args.module = None #["network", "sleep"]
 
-        self.args.tcp=False
-        self.args.mqtt=False
-        self.args.ignition=False
-        self.args.sleepcycle=False
-        self.args.ais140=False
-        self.args.cvp=False
+    def add_menus(self):
+        menu = self.ui.menuModule
+        group = QActionGroup(self)
+
+        action = QAction("All", self)
+        action.setCheckable(True)
+        action.setActionGroup(group)
+        menu.addAction(action)
+        menu.addSeparator()
+
+        for k,v in MODULE_SUBFUNCTIONS.items():
+            action = QAction(k.title(), self)
+            action.setCheckable(True)
+            action.setActionGroup(group)
+            menu.addAction(action)
+            menu.addSeparator()
+            for subfunc in v:
+                self.args[subfunc] = None
 
     def link_actions(self):
 
         self.ui.actionOpen.triggered.connect(self.open)
         self.ui.actionExit.triggered.connect(self.close)
-
-        ## Connect to function returned by moduleSelected decorator
-        self.ui.actionNetwork.triggered.connect(self.moduleSelected("network"))
-        self.ui.actionSleep.triggered.connect(self.moduleSelected("sleep"))
-        self.ui.actionStorage.triggered.connect(self.moduleSelected("storage"))
 
         self.ui.actionIgnore_Case.triggered.connect(self.settings("ignore_case"))
         self.ui.actionShow_Empty_Values.triggered.connect(self.settings("show_empty"))
@@ -165,30 +168,6 @@ class LogPyGUI(QMainWindow):
         self.ui.out_file_button.clicked.connect(self.open)
 
         self.ui.start_button.clicked.connect(self.start)
-
-
-    def open(self):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, "Select Log File", "", "Log Files (*.log);;All Files (*)", options=options
-        )
-        if file_name:
-            self.ui.log_file_lineedit.setText(file_name)
-            self.ui.out_file_lineedit.clear()
-
-    
-    def moduleSelected(self, module):
-        actions = {"network": self.ui.menuNetwork,
-                    "sleep": self.ui.menuSleep,
-                    "storage": self.ui.menuStorage}
-        def func(arg):
-            actions[module].setEnabled(arg)
-            self.args.module = module
-            if not arg:
-                for action in actions[module].actions():
-                    action.setChecked(False)
-            
-        return func
 
     def settings(self, setting):
         settings = {"ignore_case": (self.ui.ignore_case_checkbox, self.ui.actionIgnore_Case),
@@ -241,10 +220,25 @@ class LogPyGUI(QMainWindow):
         self.ui.output_textedit.clear()
 
     def finished(self):
-        QMessageBox.about(self, "Finished", "Log Analysis Finished")
-        # print("LOG ANALYSIS COMPLETE")
-        # self.ui.start_button.setEnabled(True)
-        # self.thread.quit()
+        # QMessageBox.about(self, "Finished", "Log Analysis Finished")
+        button = QMessageBox.question(self, "Finished", "Log Analysis Finished\nDo you want to open the output file?", QMessageBox.Yes | QMessageBox.No)
+        if button == QMessageBox.Yes:
+            notepad_plus_plus_paths = [r'C:\Program Files\Notepad++\notepad++.exe', r'C:\Program Files (x86)\Notepad++\notepad++.exe']
+            if osp.exists(notepad_plus_plus_paths[0]):
+                subprocess.run([notepad_plus_plus_paths[0], self.args.out_file])
+            elif osp.exists(notepad_plus_plus_paths[1]):
+                subprocess.run([notepad_plus_plus_paths[1], self.args.out_file])             
+            else:
+                startfile(self.args.out_file)
+
+    def open(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Select Log File", "", "Log Files (*.log);;All Files (*)", options=options
+        )
+        if file_name:
+            self.ui.log_file_lineedit.setText(file_name)
+            self.ui.out_file_lineedit.clear()
 
     def get_args(self):
         log_file_path = self.ui.log_file_lineedit.text()
@@ -272,20 +266,13 @@ class LogPyGUI(QMainWindow):
         # self.args.ignore_case = self.ui.ignore_case_checkbox.isChecked()
         # self.args.show_empty = self.ui.show_empty_checkbox.isChecked()
 
-        if self.ui.actionNetwork.isChecked():
-            self.args.module = "network"
-            self.args.tcp = self.ui.actionTCP.isChecked()
-            self.args.mqtt = self.ui.actionMQTT.isChecked()
-        elif self.ui.actionSleep.isChecked():
-            self.args.module = "sleep"
-            self.args.ignition = self.ui.actionIgnition.isChecked()
-            self.args.sleepcycle = self.ui.actionSleep_Cycle.isChecked()
-        elif self.ui.actionStorage.isChecked():
-            self.args.module = "storage"
-            self.args.ais140 = self.ui.actionAIS140.isChecked()
-            self.args.cvp = self.ui.actionCVP.isChecked()
-        else:
-            self.args.all = True
+        for action in self.ui.menuModule.actions():
+            if action.isChecked():
+                self.args.module = action.text().lower()
+                break
+        
+        if self.args.module == "all":
+            self.args.module = None
 
         return True
 

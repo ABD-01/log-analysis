@@ -31,10 +31,10 @@ from .can import (
     CanEvent,
 )
 
-from .storage import (
-    AIS140,
-    CVP
-)
+# from .storage import (
+#     AIS140,
+#     CVP
+# )
 
 def add_tcp_logs(la:LogAnalyzer, p):
     la.add_log_type(QIOpen("TCP Port Open", ignore_case=p.ignore_case))
@@ -69,10 +69,10 @@ def add_gps_logs(la: LogAnalyzer, p):
 def add_can_logs(la: LogAnalyzer, p):
     la.add_log_type(CanEvent("CAN Event", ignore_case=p.ignore_case))
 
-def add_ais_storage_logs(la: LogAnalyzer, p):
-    la.add_log_type(AIS140("AIS140", ignore_case=p.ignore_case, log_file_path=p.log_file))
-def add_cvp_storage_logs(la: LogAnalyzer, p):
-    la.add_log_type(CVP("CVP", ignore_case=p.ignore_case, log_file_path=p.log_file))
+# def add_ais_storage_logs(la: LogAnalyzer, p):
+#     la.add_log_type(AIS140("AIS140", ignore_case=p.ignore_case, log_file_path=p.log_file))
+# def add_cvp_storage_logs(la: LogAnalyzer, p):
+#     la.add_log_type(CVP("CVP", ignore_case=p.ignore_case, log_file_path=p.log_file))
 
 MODULE_SUBFUNCTIONS = {
     "network": ["tcp", "mqtt", "netswitching", "pdpdeact", "netregistration"],
