@@ -446,9 +446,9 @@ Making .spec files:
     ```
     
 
-Combining all spec files in **********************LogPy.spec********************** file:
+Combining all spec files in ***LogPy.spec*** file:
 
-```toml
+```spec
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
