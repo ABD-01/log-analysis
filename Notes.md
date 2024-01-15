@@ -1,6 +1,20 @@
 # PySide6 Notes
 
-[TOC]
+<!-- [TOC] -->
+- [PySide6 Notes](#pyside6-notes)
+- [Using Sys to send signals across scripts](#using-sys-to-send-signals-across-scripts)
+- [Starting a python script in new thread](#starting-a-python-script-in-new-thread)
+  * [1. Using threading Module](#1-using-threading-module)
+  * [2. Using QRunnable](#2-using-qrunnable)
+  * [3. Using QObject and QThread](#3-using-qobject-and-qthread)
+- [Creating Python Package](#creating-python-package)
+  * [[Old Way] Setuptools](#-old-way--setuptools)
+  * [Building package using pyproject.toml](#building-package-using-pyprojecttoml)
+    + [Poetry](#poetry)
+- [Creating Executable Python Package for PySide6](#creating-executable-python-package-for-pyside6)
+  * [Using .spec file](#using-spec-file)
+  * [Using InstallForge](#using-installforge)
+
 
 # Using Sys to send signals across scripts
 
@@ -365,7 +379,8 @@ logpy = "logpy.main:main"
 
 **Usage**:
 
-![poetry build](https://bitbucket.org/repo/jKLL9ey/images/1021884919-Untitled.png)
+<!-- ![poetry build](https://bitbucket.org/repo/jKLL9ey/images/1021884919-Untitled.png) -->
+![poetry build](media/image-4.png)
 
 poetry build
 
